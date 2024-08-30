@@ -3,6 +3,7 @@ package com.example.addressbook.controller;
 import com.example.addressbook.model.Contact;
 import com.example.addressbook.model.IContactDAO;
 import com.example.addressbook.model.MockContactDAO;
+import com.example.addressbook.model.SqliteContactDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -28,7 +29,7 @@ public class MainController {
     @FXML
     private VBox contactContainer;
     public MainController() {
-        contactDAO = new MockContactDAO();
+        contactDAO = new SqliteContactDAO();
     }
     /**
      * Programmatically selects a contact in the list view and
@@ -153,15 +154,19 @@ public class MainController {
         final String DEFAULT_LAST_NAME = "Contact";
         final String DEFAULT_EMAIL = "";
         final String DEFAULT_PHONE = "";
-        Contact newContact = new Contact(DEFAULT_FIRST_NAME, DEFAULT_LAST_NAME, DEFAULT_EMAIL, DEFAULT_PHONE);
+
+        // Use the constructor without id for new contacts
+        Contact newContact = new Contact(DEFAULT_FIRST_NAME, DEFAULT_LAST_NAME, DEFAULT_PHONE, DEFAULT_EMAIL);
+
         // Add the new contact to the database
         contactDAO.addContact(newContact);
+
+        // Refresh the list view and select the new contact
         syncContacts();
-        // Select the new contact in the list view
-        // and focus the first name text field
         selectContact(newContact);
         firstNameTextField.requestFocus();
     }
+
     @FXML
     private void onCancel() {
         // Find the selected contact
