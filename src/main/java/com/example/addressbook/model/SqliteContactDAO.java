@@ -10,8 +10,6 @@ public class SqliteContactDAO implements IContactDAO {
     public SqliteContactDAO() {
         connection = SqliteConnection.getInstance();
         createTable();
-        // Used for testing, to be removed or commented out later in production
-        insertSampleData();
     }
 
     private void createTable() {
@@ -71,6 +69,8 @@ public class SqliteContactDAO implements IContactDAO {
         }
     }
 
+
+
     @Override
     public void updateContact(Contact contact) {
         String query = "UPDATE contacts SET firstName = ?, lastName = ?, phone = ?, email = ? WHERE id = ?";
@@ -104,12 +104,15 @@ public class SqliteContactDAO implements IContactDAO {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new Contact(
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getString("phone"),
-                        rs.getString("email")
-                );
+                String firstName = rs.getString("firstName");
+                String lastName = rs.getString("lastName");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+
+                // Create the Contact object and set the ID
+                Contact contact = new Contact(firstName, lastName, phone, email);
+                contact.setId(id);
+                return contact;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,23 +120,34 @@ public class SqliteContactDAO implements IContactDAO {
         return null;
     }
 
+
     @Override
     public List<Contact> getAllContacts() {
         List<Contact> contacts = new ArrayList<>();
         String query = "SELECT * FROM contacts";
+
         try (Statement stmt = connection.createStatement()) {
             ResultSet rs = stmt.executeQuery(query);
+
+            // Iterate over the ResultSet and create Contact objects
             while (rs.next()) {
-                contacts.add(new Contact(
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getString("phone"),
-                        rs.getString("email")
-                ));
+                int id = rs.getInt("id");
+                String firstName = rs.getString("firstName");
+                String lastName = rs.getString("lastName");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+
+                // Create a new Contact object
+                Contact contact = new Contact(firstName, lastName, email, phone);
+                contact.setId(id); // Set the ID on the contact
+
+                // Add the contact to the list
+                contacts.add(contact);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return contacts;
     }
 }

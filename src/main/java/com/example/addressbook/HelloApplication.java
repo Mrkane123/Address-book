@@ -9,7 +9,10 @@ import java.io.IOException;
 
 
 
+
+
 public class HelloApplication extends Application {
+
     // Constants defining the window title and size
     public static final String TITLE = "Address Book";
     public static final int WIDTH = 640;

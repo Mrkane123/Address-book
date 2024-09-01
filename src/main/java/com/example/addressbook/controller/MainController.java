@@ -92,6 +92,12 @@ public class MainController {
 
         // Retrieve all contacts from the DAO
         List<Contact> contacts = contactDAO.getAllContacts();
+
+        // Debugging: Print each contact's summary to the console
+        for (Contact contact : contacts) {
+            System.out.println(contact.getContactSummary());  // Print the contact summary
+        }
+
         boolean hasContact = !contacts.isEmpty();
 
         if (hasContact) {
@@ -111,6 +117,7 @@ public class MainController {
         // Show/hide the contact container based on whether there are contacts
         contactContainer.setVisible(hasContact);
     }
+
 
 
     @FXML
@@ -155,17 +162,18 @@ public class MainController {
         final String DEFAULT_EMAIL = "";
         final String DEFAULT_PHONE = "";
 
-        // Use the constructor without id for new contacts
-        Contact newContact = new Contact(DEFAULT_FIRST_NAME, DEFAULT_LAST_NAME, DEFAULT_PHONE, DEFAULT_EMAIL);
+        // Create a new contact object
+        Contact newContact = new Contact(DEFAULT_FIRST_NAME, DEFAULT_LAST_NAME, DEFAULT_EMAIL, DEFAULT_PHONE);
 
         // Add the new contact to the database
         contactDAO.addContact(newContact);
 
         // Refresh the list view and select the new contact
-        syncContacts();
-        selectContact(newContact);
-        firstNameTextField.requestFocus();
+        syncContacts();  // Refresh the ListView with the updated contacts
+        contactsListView.getSelectionModel().select(newContact);  // Select the newly added contact
+        firstNameTextField.requestFocus();  // Focus on the first name text field for editing
     }
+
 
     @FXML
     private void onCancel() {

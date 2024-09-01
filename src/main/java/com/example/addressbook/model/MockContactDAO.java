@@ -18,6 +18,7 @@ public class MockContactDAO implements IContactDAO {
         addContact(new Contact("Jerry", "Doe", "jerrydoe@example.com", "0423423426"));
     }
 
+
     @Override
     public void addContact(Contact contact) {
         // Assign an auto-incremented id to the contact
